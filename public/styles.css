@@ -19,11 +19,15 @@ form {
 .sidebar {
   background: #acd0c0;
   position: fixed;
-  top: 0;
+  top: 7rem;
   bottom: 0rem;
   left: 0;
   width: 10rem;
   color: white;
+}
+
+.sidebar button {
+  margin: 1rem 1rem;
 }
 
 input {
@@ -85,7 +89,7 @@ header{
   color: #4F6457;
   font-family: 'Changa', sans-serif;
   font-size: 4rem;
-  margin: 0 3rem;
+  margin: 0 1rem;
   display: flex;
   justify-content: space-between;
 }
