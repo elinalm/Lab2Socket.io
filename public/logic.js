@@ -13,9 +13,16 @@ function setupEventListeners() {
   const messageForm = document.querySelector(".chat.ui form");
   messageForm.addEventListener("submit", onSendMessage);
 
+  // Leave room
+/*   const leaveRoom = document.querySelector('.leaveRoomButton')
+  leaveRoom.addEventListener("click", onLeaveRoom) */
+
   //socket io events
   socket.on("join successful", loadChatUi);
   socket.on("message", onMessageReceived);
+/*   socket.on("leave successful", loadStartpage);
+ */
+
 }
 
 function onJoinRoom(event) {
@@ -28,6 +35,13 @@ function onJoinRoom(event) {
   socket.emit("join room", { name, room });
 }
 
+/* function onLeaveRoom(event) {
+    event.preventDefault()
+
+    socket.emit("leave room");
+
+}
+ */
 function onSendMessage(event) {
   event.preventDefault();
   const input = document.querySelector(".chat.ui form input");
@@ -41,6 +55,12 @@ function loadChatUi(data) {
   document.querySelector(".chat.ui").classList.remove("hidden");
   // document.querySelector(".mainSite").classList.remove("hidden");
 }
+
+/* function loadStartpage() {
+    
+    location.reload()
+    
+} */
 
 function onMessageReceived({ name, message }) {
   const ul = document.querySelector("ul");
