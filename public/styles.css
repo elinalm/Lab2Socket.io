@@ -1,17 +1,33 @@
 body {
   margin: 0;
   background: #75b1a9;
-  color: white;
+}
+
+main{
   display: flex;
-  align-items: center;
   justify-content: center;
-  height: 100vh;
+  color: white;
   font-size: 1.2rem;
+  height: 100vh;
 }
 
 form {
   display: flex;
   flex-direction: column;
+}
+
+.sidebar {
+  background: #acd0c0;
+  position: fixed;
+  top: 7rem;
+  bottom: 0rem;
+  left: 0;
+  width: 10rem;
+  color: white;
+}
+
+.sidebar button {
+  margin: 1rem 1rem;
 }
 
 input {
@@ -77,3 +93,23 @@ li:nth-child(odd) {
   bottom: 0;
   margin: 0.5rem;
 }
+header{
+  color: #4F6457;
+  font-family: 'Changa', sans-serif;
+  font-size: 4rem;
+  margin: 0 1rem;
+  display: flex;
+  justify-content: space-between;
+}
+
+.contact{
+  color: #4F6457;
+  font-size: 1.5rem;
+  margin: 1rem;
+}
+
+.fa-user{
+  margin: 0 2rem;
+}
+
+
