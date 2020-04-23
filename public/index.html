@@ -1,37 +1,52 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vocat</title>
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="./logic.js"></script>
-    <link rel="stylesheet" href="./styles.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Changa:wght@700&display=swap" rel="stylesheet">
-    <script src="https://kit.fontawesome.com/6c12e5381c.js" crossorigin="anonymous"></script>
-  </head>
-  <body>
-      <header>
-          Vochat
-          <div class="contact">
-          Contact
-          <i class="fas fa-user"></i>
-        </div>
-      </header>
-    
-    <main>
+  <html lang="en">
+    <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <title>Vochat</title>
+      <script src="/socket.io/socket.io.js"></script>
+      <script src="./logic.js"></script>
+      <link rel="stylesheet" href="./styles.css" />
+    </head>
+    <body>
+          <header>
+            Vochat
+            <div class="contact">
+            Contact
+            <i class="fas fa-user"></i>
+          </div>
+        </header>
+      <main>
+      <div class="sidebar hidden">
+        <form>
+          <button>Add room</button>
+        </form>
+
+        <!-- <h3>Open Rooms</h3> -->
+        <ul class="roomlist">
+          <!-- Rooms are put here-->
+        </ul>
+      </div>
+
       <form class="join ui">
         <input type="text" placeholder="Enter your name" />
-        <input type="text" placeholder="Enter a room" />
-        <button>Join Room</button>
+        <!-- <input type="text" placeholder="Enter a room" /> -->
+        <button>Enter Lobby</button>
       </form>
-  
-      <!-- <div class="mainSite hidden">
-        <div class="bodyInMain">
+
+      <div class="lobby hidden">
+        <form class="bodyInMain">
           <h1>Welcome</h1>
-        </div>
-      </div> -->
-  
+          <!-- <button>rum</button> -->
+        </form>
+      </div>
+
+      <form class="addRoom hidden">
+        <input type="text" placeholder="Enter room name" />
+        <input type="text" placeholder="Enter password(optional)" />
+        <button>Add</button>
+      </form>
+
       <div class="chat ui hidden">
         <ul>
           <!-- Messages are put here-->
@@ -41,7 +56,7 @@
           <button class="sendButtonInChat">Send</button>
         </form>
       </div>
-
     </main>
-  </body>
-</html>
+    </body>
+  </html>
+</DOCTYPE>

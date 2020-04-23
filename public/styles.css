@@ -16,6 +16,16 @@ form {
   flex-direction: column;
 }
 
+.sidebar {
+  background: #acd0c0;
+  position: fixed;
+  top: 0;
+  bottom: 0rem;
+  left: 0;
+  width: 10rem;
+  color: white;
+}
+
 input {
   margin-bottom: 1rem;
   padding: 0.5rem;
