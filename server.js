@@ -12,8 +12,13 @@ app.use(express.static(__dirname + "/public"));
 io.on("connection", (socket) => {
   console.log("Client connected: ", socket.id);
 
+  socket.on("joind lobby", (data) => {
+    io.to(socket.id).emit("room list", roomList);
+  });
+
   socket.on("add room", (data) => {
     roomList.push(data);
+    console.log(roomList[1].name + " listan är här");
   });
 
   socket.on("join room", (data) => {

@@ -18,9 +18,16 @@ function setupEventListeners() {
   socket.on("message", onMessageReceived);
 }
 
+function handleRoomList(data) {
+  console.log(JSON.stringify(data) + " : roomList?");
+}
+
 // enter lobby of chat
 function enterLobby(event) {
   event.preventDefault();
+
+  socket.emit("joind lobby");
+  socket.on("room list", handleRoomList);
 
   document.querySelector(".join.ui").classList.add("hidden");
   document.querySelector(".chat.ui").classList.add("hidden");
@@ -36,27 +43,45 @@ function enterLobby(event) {
   // });
 
   //Add room handler
-  const userCanAddRoom = document.querySelector(".sidebar ");
-
+  const userCanAddRoom = document.querySelector(".sidebar form");
+  console.log(userCanAddRoom + " : htmlelement");
   userCanAddRoom.addEventListener("submit", (event) => {
     event.preventDefault();
     addRoom();
   });
 }
 
-// user can add room
+// user can create room
 function addRoom() {
   document.querySelector(".addRoom").classList.remove("hidden");
   document.querySelector(".lobby").classList.add("hidden");
 
-  const [roomName, roomPassword] = document.querySelectorAll(".addRoom input");
-  const roomObj = {
-    name: roomName.value,
-    password: roomPassword.value,
-  };
+  const submitRoom = document.querySelector(".addRoom");
+  submitRoom.addEventListener("submit", (event) => {
+    event.preventDefault();
 
-  socket.emit("add room", roomObj);
+    const roomName = document.getElementById("roomName").value;
+    const password = document.getElementById("password").value;
+
+    const roomObj = {
+      name: roomName,
+      password: password,
+    };
+
+    console.log(roomName + "här är namnet");
+
+    socket.emit("add room", roomObj);
+  });
 }
+
+// const roomObj = {
+//   name: roomName.value,
+//   password: roomPassword.value,
+// };
+// const namn = roomName.value;
+// const pass = roomPassword.value;
+//   });
+// }
 
 function onJoinRoom(user) {
   // event.preventDefault();
