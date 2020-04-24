@@ -28,17 +28,42 @@ io.on("connection", (socket) => {
       io.to(socket.id).emit("join successful", "success");
 
       //Broadcast message to all clients in the room
-      io.to(data.room).emit("message", {
-        name: data.name,
-        message: ` Has joined the room!`,
-      });
-    });
+      io.to(data.room).emit(
+        'message', 
+        {
+          name: data.name,
+           message: ` Has joined the room!`},
+        )
+    })
 
-    socket.on("message", (message) => {
-      //Broadcast message to all clients in the room
-      io.to(data.room).emit("message", { name: data.name, message });
-    });
-  });
-});
+    socket.on('message', (message) => {
+            //Broadcast messages to all clients in the room
+      io.to(data.room).emit('message', { name: data.name, message })
+    })
+  })
+  
+})
 
-server.listen(3000, () => console.log("Server is running"));
+/*   io.on('disconnect', (socket) => {
+      console.log('User disconnected');
+
+      socket.on('leave room', (data) => {
+          socket.leave(data.room, () => {
+            io.to(socket.id).emit('leave successful', 'leaving')
+
+            io.to(data.room).emit(
+                'message', 
+                {
+                  name: data.name,
+                   message: ` Has left the room!`},
+                )
+          })
+          
+      })
+      
+  }) */
+
+
+
+server.listen(3000, () => console.log('Server is running'))
+
