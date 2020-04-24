@@ -5,7 +5,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <title>Vochat</title>
       <script src="/socket.io/socket.io.js"></script>
-      <script src="./logic.js"></script>
+      <script type="module" src="./logic.js"></script>
       <link rel="stylesheet" href="./styles.css" />
       <link href="https://fonts.googleapis.com/css2?family=Changa:wght@700&display=swap" rel="stylesheet">
       <script src="https://kit.fontawesome.com/6c12e5381c.js" crossorigin="anonymous"></script>
@@ -27,9 +27,8 @@
           <button>Add room</button>
         </form>
 
-        <!-- <h3>Open Rooms</h3> -->
+         <h3>Open Rooms</h3> 
         <ul class="roomlist">
-          <!-- Rooms are put here-->
         </ul>
       </div>
 
@@ -42,7 +41,7 @@
       <div class="lobby hidden">
         <form class="bodyInMain">
           <h1>Welcome</h1>
-          <!-- <button>rum</button> -->
+          <button>rum</button>
         </form>
       </div>
 
@@ -53,11 +52,8 @@
       </form>
     </div>
 
-  </body>
-</html>
-
       <div class="chat ui hidden">
-        <ul>
+        <ul class="chatMessageUl">
           <!-- Messages are put here-->
         </ul>
         <form class="answerInChat">

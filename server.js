@@ -12,12 +12,13 @@ app.use(express.static(__dirname + "/public"));
 io.on("connection", (socket) => {
   console.log("Client connected: ", socket.id);
 
-  socket.on("joind lobby", (data) => {
-    io.to(socket.id).emit("room list", roomList);
+  socket.on("joined lobby", (data) => {
+    socket.emit("room list", roomList);
   });
 
   socket.on("add room", (data) => {
     roomList.push(data);
+    io.emit("room list", roomList);
     console.log(roomList[1].name + " listan är här");
   });
 
@@ -25,45 +26,41 @@ io.on("connection", (socket) => {
     socket.join(data.room, () => {
       // Respond to client that join was success
       //Samma som socket.emit nedan
-      io.to(socket.id).emit("join successful", "success");
-
+      socket.emit("join successful", "success");
+      console.log("vi kan se rummen", socket.rooms);
       //Broadcast message to all clients in the room
-      io.to(data.room).emit(
-        'message', 
-        {
-          name: data.name,
-           message: ` Has joined the room!`},
-        )
-    })
+      io.to(data.room).emit("message", {
+        name: data.name,
+        message: ` Has joined the room!`,
+      });
+    });
 
-    socket.on('message', (message) => {
-            //Broadcast messages to all clients in the room
-      io.to(data.room).emit('message', { name: data.name, message })
-    })
-  })
-  
-})
+    socket.on("message", (message) => {
+      console.log("servermessage");
+      //Broadcast messages to all clients in the room
+      io.to(data.room).emit("message", { name: data.name, message });
+    });
 
-/*   io.on('disconnect', (socket) => {
-      console.log('User disconnected');
+    socket.on("leave room", () => {
+      console.log("User disconnected");
+      socket.leaveAll();
+      console.log("VI lämnar", socket.rooms);
+      io.to(room).emit("message", {
+        //lägga till rummet som vi är i
+        name: data.name,
+        message: "Has left the room",
+      });
+    });
+  });
 
-      socket.on('leave room', (data) => {
-          socket.leave(data.room, () => {
-            io.to(socket.id).emit('leave successful', 'leaving')
+  socket.on("disconnect", (data) => {
+    console.log("User disconnected");
 
-            io.to(data.room).emit(
-                'message', 
-                {
-                  name: data.name,
-                   message: ` Has left the room!`},
-                )
-          })
-          
-      })
-      
-  }) */
+    io.to(data.room).emit("message", {
+      name: data.name,
+      message: ` Has left the room!`,
+    });
+  });
+});
 
-
-
-server.listen(3000, () => console.log('Server is running'))
-
+server.listen(3000, () => console.log("Server is running"));
