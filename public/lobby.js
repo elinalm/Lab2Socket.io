@@ -1,19 +1,37 @@
-import { onMessageReceived } from "./chat.js";
-import { socket } from "./logic.js";
+import {
+  onMessageReceived
+} from "./chat.js";
+import {
+  socket
+} from "./logic.js";
 
 // enter lobby of chat
 
 function handleRoomList(data) {
   console.log(JSON.stringify(data) + " : roomList?");
+  const password = document.getElementById("password").value;
 
-  const list = data.map(function (item) {
-    let sidebarList = document.querySelector(".roomlist");
-    let listInSidebar = document.createElement("button");
-    listInSidebar.innerText = item.name;
-    listInSidebar.className = "listelementsInSidebar";
-    // const listName = document.createElement()
-    sidebarList.append(listInSidebar);
-  });
+
+  if (!password) {
+
+    const list = data.map(function (item) {
+      let sidebarList = document.querySelector(".roomlist");
+      let listInSidebar = document.createElement("button");
+      listInSidebar.innerText = item.name;
+      listInSidebar.className = "listelementsInSidebar";
+      // const listName = document.createElement()
+      sidebarList.append(listInSidebar);
+    })
+  } else {
+    const closedList = data.map((item) => {
+      let sidebarList2 = document.querySelector(".closedRoomlist");
+      let listInSidebar2 = document.createElement("button");
+      listInSidebar2.innerText = item.name;
+      listInSidebar2.className = "listelementsInSidebar";
+      sidebarList2.append(listInSidebar2)
+    })
+  }
+
 }
 
 // Display new list in room view
@@ -81,6 +99,9 @@ function onJoinRoom(data) {
   console.log(name);
   const room = "Chatroom!"; //roomInput.value;
 
-  socket.emit("join room", { name, room });
+  socket.emit("join room", {
+    name,
+    room
+  });
   socket.on("message", onMessageReceived);
 }

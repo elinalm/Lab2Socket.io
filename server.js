@@ -6,6 +6,8 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIO(server);
 const roomList = [{ name: "Open chat", password: "" }];
+//Closed roomlist
+const closedRoomList = [{name: "Closed chat", password: ""}]
 
 app.use(express.static(__dirname + "/public"));
 
@@ -18,9 +20,10 @@ io.on("connection", (socket) => {
 
   socket.on("add room", (data) => {
     roomList.push(data);
-    io.emit("room list", roomList);
+    io.emit("room list", roomList, closedRoomList);
     console.log(roomList[1].name + " listan är här");
   });
+
 
   socket.on("join room", (data) => {
     socket.join(data.room, () => {
