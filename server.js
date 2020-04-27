@@ -15,7 +15,7 @@ io.on("connection", (socket) => {
   console.log("Client connected: ", socket.id);
 
   socket.on("joined lobby", (data) => {
-    socket.emit("room list", roomList);
+    socket.emit("room list", roomList, closedRoomList);
   });
 
   socket.on("add room", (data) => {
