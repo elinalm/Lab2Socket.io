@@ -13,8 +13,7 @@ function handleRoomList(data) {
 
 
   if (!password) {
-
-    const list = data.map(function (item) {
+    data.map(function (item) {
       let sidebarList = document.querySelector(".roomlist");
       let listInSidebar = document.createElement("button");
       listInSidebar.innerText = item.name;
@@ -23,7 +22,7 @@ function handleRoomList(data) {
       sidebarList.append(listInSidebar);
     })
   } else {
-    const closedList = data.map((item) => {
+    data.map((item) => {
       let sidebarList2 = document.querySelector(".closedRoomlist");
       let listInSidebar2 = document.createElement("button");
       listInSidebar2.innerText = item.name;
