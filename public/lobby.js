@@ -1,20 +1,10 @@
 import { onMessageReceived } from "./chat.js";
 import { socket } from "./logic.js";
 
+let username;
+let roomList;
+
 // enter lobby of chat
-
-function handleRoomList(data) {
-  console.log(JSON.stringify(data) + " : roomList?");
-
-  const list = data.map(function (item) {
-    let sidebarList = document.querySelector(".roomlist");
-    let listInSidebar = document.createElement("button");
-    listInSidebar.innerText = item.name;
-    listInSidebar.className = "listelementsInSidebar";
-    // const listName = document.createElement()
-    sidebarList.append(listInSidebar);
-  });
-}
 
 // Display new list in room view
 export function enterLobby(event) {
@@ -28,14 +18,7 @@ export function enterLobby(event) {
   document.querySelector(".lobby").classList.remove("hidden");
   document.querySelector(".sidebar").classList.remove("hidden");
 
-  const name = document.querySelector(".join.ui input").value;
-
-  //Join Room handler
-  const joinRoom = document.querySelector(".bodyInMain ");
-  joinRoom.addEventListener("submit", (event) => {
-    event.preventDefault();
-    onJoinRoom(name);
-  });
+  username = document.querySelector(".join.ui input").value;
 
   //Add room handler
   const userCanAddRoom = document.querySelector(".sidebar form");
@@ -45,42 +28,81 @@ export function enterLobby(event) {
     addRoom();
   });
 }
+const submitRoom = document.querySelector(".addRoom");
+submitRoom.addEventListener("submit", (event) => {
+  event.preventDefault();
+
+  const roomName = document.getElementById("roomName").value;
+  const password = document.getElementById("password").value;
+
+  const roomObj = {
+    name: roomName,
+    password: password,
+  };
+  socket.emit("add room", roomObj);
+});
 
 // user can create room
 function addRoom() {
   document.querySelector(".addRoom").classList.remove("hidden");
   document.querySelector(".lobby").classList.add("hidden");
+}
+function handleRoomList(data) {
+  roomList = data;
+  let sidebarList = document.querySelector(".roomlist");
+  sidebarList.innerHTML = "";
 
-  const submitRoom = document.querySelector(".addRoom");
-  submitRoom.addEventListener("submit", (event) => {
-    event.preventDefault();
+  roomList.forEach((room, index) => {
+    let buttonInSidebar = document.createElement("button");
+    buttonInSidebar.innerText = room.name;
+    console.log(index);
+    buttonInSidebar.className = "listelementsInSidebar";
+    sidebarList.appendChild(buttonInSidebar);
+  });
+  console.log(JSON.stringify(roomList) + " : roomList!");
 
-    const roomName = document.getElementById("roomName").value;
-    const password = document.getElementById("password").value;
-
-    const roomObj = {
-      name: roomName,
-      password: password,
-    };
-
-    console.log(roomName + "här är namnet");
-
-    socket.emit("add room", roomObj);
+  let buttons = document.querySelectorAll(".listelementsInSidebar");
+  buttons.forEach((button, index) => {
+    button.addEventListener("click", () => {
+      console.log(button, index);
+      selectRoom(index);
+    });
   });
 }
 
-function onJoinRoom(data) {
-  // event.preventDefault();
-  console.log("är i rum");
+function selectRoom(roomIndex) {
+  console.log(roomIndex);
+  let roomName = roomList[roomIndex];
+  console.log(JSON.stringify(roomName) + " : roomanme?!");
+  onJoinRoom(roomName);
+}
+
+function onJoinRoom(roomName) {
   document.querySelector(".lobby").classList.add("hidden");
   document.querySelector(".chat.ui").classList.remove("hidden");
+  document.querySelector(".addRoom").classList.add("hidden");
+  document.querySelector(".sidebar").classList.add("hidden");
 
-  //   const roomInput = document.querySelector(".join.ui input");
-
-  const name = data;
-  console.log(name);
-  const room = "Chatroom!"; //roomInput.value;
-
-  socket.emit("join room", { name, room });
+  socket.emit("join room", { name: username, room: roomName });
   socket.on("message", onMessageReceived);
+
+  // Leave room button
+  const leaveRoom = document.querySelector(".leaveRoomButton");
+  leaveRoom.addEventListener("click", () => {
+    onLeaveRoom(roomName);
+  });
+}
+
+// Leaving the chat room
+function onLeaveRoom(roomName) {
+  console.log(roomName.name, ": detta är roomname");
+  socket.emit("leave room", { name: username, room: roomName.name }); // Här behlöver vi skicka med data på rummet
+  console.log("nu lämnar vi");
+
+  document.querySelector(".join.ui").classList.add("hidden");
+  document.querySelector(".chat.ui").classList.add("hidden");
+  document.querySelector(".lobby").classList.remove("hidden");
+  document.querySelector(".sidebar").classList.remove("hidden");
+
+  // document.querySelector(".chatMessageUl").innerHTML = "";
 }
