@@ -24,10 +24,7 @@ form {
   left: 0;
   width: 10rem;
   color: white;
-}
-
-.chat {
-  margin-left: 10rem;
+  overflow-y: scroll;
 }
 
 .sidebar button {
