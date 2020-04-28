@@ -26,6 +26,7 @@ io.on("connection", (socket) => {
     roomList.push(data);
     io.emit("room list", roomList);
     console.log(roomList[1].name + " listan är här");
+    socket.emit("add successful", data.name);
   });
 
   socket.on("join room", (data) => {
@@ -49,10 +50,11 @@ io.on("connection", (socket) => {
   });
 
   socket.on("leave room", (data) => {
-    console.log(data.room, ":detta är data i server");
-    socket.broadcast.to(data.room).emit("message", {
-      name: data.name,
-      message: " has left the room!",
+    socket.leave(data.room, () => {
+      io.to(data.room).emit("message", {
+        name: data.name,
+        message: " has left the room!",
+      });
     });
   });
 
