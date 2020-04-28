@@ -47,6 +47,7 @@ function addRoom() {
   document.querySelector(".addRoom").classList.remove("hidden");
   document.querySelector(".lobby").classList.add("hidden");
 }
+
 function handleRoomList(data) {
   roomList = data;
   let sidebarList = document.querySelector(".roomlist");
@@ -77,7 +78,7 @@ function selectRoom(roomIndex) {
   onJoinRoom(roomName);
 }
 
-function onJoinRoom(roomName) {
+export function onJoinRoom(roomName) {
   document.querySelector(".lobby").classList.add("hidden");
   document.querySelector(".chat.ui").classList.remove("hidden");
   document.querySelector(".addRoom").classList.add("hidden");
