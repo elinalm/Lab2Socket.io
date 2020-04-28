@@ -24,6 +24,7 @@ form {
   left: 0;
   width: 10rem;
   color: white;
+  overflow-y: scroll;
 }
 
 .sidebar button {
