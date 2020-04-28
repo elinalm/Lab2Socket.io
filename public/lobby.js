@@ -1,9 +1,5 @@
-import {
-  onMessageReceived
-} from "./chat.js";
-import {
-  socket
-} from "./logic.js";
+import { onMessageReceived } from "./chat.js";
+import { socket } from "./logic.js";
 
 let username;
 let roomList;
@@ -51,49 +47,45 @@ function addRoom() {
 }
 
 function handleRoomList(data) {
-  
   roomList = data;
   let sidebarList = document.querySelector(".roomlist");
-  let sidebarList2 = document.querySelector(".closedRoomlist")
+  let sidebarList2 = document.querySelector(".closedRoomlist");
   sidebarList.innerHTML = "";
   sidebarList2.innerHTML = "";
-  
 
-    roomList.forEach((room) => {
-      console.log(room + "detta är rum");
-      
-      if (!room.password) {
-
+  roomList.forEach((room, index) => {
+    if (!room.password) {
       let buttonInSidebar = document.createElement("button");
       buttonInSidebar.innerText = room.name;
       buttonInSidebar.className = "listelementsInSidebar";
+      buttonInSidebar.addEventListener("click", () => {
+        console.log(room, index, "här är room och index");
+        selectRoom(index);
+      });
       sidebarList.appendChild(buttonInSidebar);
     } else {
       let buttonInSidebar2 = document.createElement("button");
       buttonInSidebar2.innerText = room.name;
-      buttonInSidebar2.className = "listelementsInSidebar2";
+      buttonInSidebar2.className = "listelementsInSidebar";
+      buttonInSidebar2.addEventListener("click", () => {
+        const passwordEntered = prompt("lösen");
+        if (passwordEntered === room.password) {
+          selectRoom(index);
+        } else {
+          alert("FEEEEL");
+        }
+      });
       sidebarList2.appendChild(buttonInSidebar2);
-  }})
-
-
-  console.log(JSON.stringify(roomList) + " : roomList!");
-
-  let buttonsOpen = document.querySelectorAll(".listelementsInSidebar");
-  buttonsOpen.forEach((button, index) => {
-    button.addEventListener("click", () => {
-      selectRoom(index)
-    });
+    }
   });
 
-  let buttonsClosed = document.querySelectorAll(".listelementsInSidebar2");
-  buttonsClosed.forEach((button, index) => {
-    button.addEventListener("click", () => {
-      prompt("Fyll i rätt lösenord")
-    });
-  });
+  // let buttons = document.querySelectorAll(".listelementsInSidebar");
+  // buttons.forEach((button, index) => {
+  //   button.addEventListener("click", () => {
+  //     selectRoom(index);
+  //   });
+  // });
 }
-
-
 
 function selectRoom(roomIndex) {
   let roomName = roomList[roomIndex];
@@ -107,7 +99,7 @@ export function onJoinRoom(roomName) {
   document.querySelector(".addRoom").classList.add("hidden");
   document.querySelector(".sidebar").classList.add("hidden");
 
-  socket.emit("join room", { name: username, room: roomName });
+  socket.emit("join room", { name: username, room: roomName.name });
   socket.on("message", onMessageReceived);
 
   // Leave room button
@@ -119,8 +111,8 @@ export function onJoinRoom(roomName) {
 
 // Leaving the chat room
 function onLeaveRoom(roomName) {
-  console.log(roomName, ": detta är roomname");
-  socket.emit("leave room", { name: username, room: roomName }); // Här behlöver vi skicka med data på rummet
+  console.log(roomName.name, ": detta är roomname");
+  socket.emit("leave room", { name: username, room: roomName.name }); // Här behlöver vi skicka med data på rummet
   console.log("nu lämnar vi");
 
   document.querySelector(".join.ui").classList.add("hidden");
@@ -129,6 +121,4 @@ function onLeaveRoom(roomName) {
   document.querySelector(".sidebar").classList.remove("hidden");
 
   document.querySelector(".chatMessageUl").innerHTML = "";
-
 }
-

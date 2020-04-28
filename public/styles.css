@@ -1,6 +1,7 @@
 body {
   margin: 0;
   background: #75b1a9;
+  height: 100vh;
 }
 
 main {
@@ -8,7 +9,6 @@ main {
   justify-content: center;
   color: white;
   font-size: 1.2rem;
-  height: 100vh;
 }
 
 form {
@@ -22,7 +22,7 @@ form {
   top: 7rem;
   bottom: 0rem;
   left: 0;
-  width: 10rem;
+  width: 15rem;
   color: white;
   overflow-y: scroll;
 }
@@ -84,6 +84,8 @@ li:nth-child(odd) {
 
 .answerInChat {
   margin: 0.5rem;
+  position: fixed;
+  bottom: 0;
 }
 
 .sendButtonInChat {

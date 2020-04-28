@@ -10,6 +10,7 @@ export function onMessageReceived({ name, message }) {
   const li = document.createElement("li");
   li.innerText = `${name}: ${message}`;
   ul.append(li);
+  // li.innerText = "";
 }
 
 function onSendMessage(event) {

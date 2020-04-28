@@ -7,8 +7,10 @@ const server = http.createServer(app);
 const io = socketIO(server);
 const roomList = [
   { name: "Open chat", password: "" },
+  { name: "Room nomero ono", password: "" },
+  { name: "Closed chat", password: "Pass" },
+  { name: "Closed ", password: "ss" },
 ];
-
 
 app.use(express.static(__dirname + "/public"));
 
@@ -27,15 +29,15 @@ io.on("connection", (socket) => {
     socket.emit("add successful", data.name);
   });
 
-
   socket.on("join room", (data) => {
-    socket.join(data.room.name, () => {
-      console.log("vi kan se rummet" + JSON.stringify(data.room.name));
+    // socket.removeAllListeners("message");
+    socket.join(data.room, () => {
+      console.log("vi kan se rummet" + JSON.stringify(data.room));
       // Respond to client that join was success
       socket.emit("join successful", "success");
 
       //Broadcast message to all clients in the room
-      io.to(data.room.name).emit("message", {
+      io.to(data.room).emit("message", {
         name: data.name,
         message: ` Has joined the room!`,
       });
@@ -44,7 +46,7 @@ io.on("connection", (socket) => {
     socket.on("message", (message) => {
       console.log("servermessage");
       //Broadcast messages to all clients in the room
-      io.to(data.room.name).emit("message", { name: data.name, message });
+      io.to(data.room).emit("message", { name: data.name, message });
     });
   });
 
