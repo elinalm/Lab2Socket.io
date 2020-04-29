@@ -1,4 +1,3 @@
-import { onMessageReceived } from "./chat.js";
 import { socket } from "./logic.js";
 
 let username;
@@ -52,14 +51,14 @@ function handleRoomList(data) {
   let sidebarList2 = document.querySelector(".closedRoomlist");
   sidebarList.innerHTML = "";
   sidebarList2.innerHTML = "";
-
+ 
   roomList.forEach((room, index) => {
-    if (!room.password) {
+    if (!room.hasPass) {
       let buttonInSidebar = document.createElement("button");
       buttonInSidebar.innerText = room.name;
       buttonInSidebar.className = "listelementsInSidebar";
       buttonInSidebar.addEventListener("click", () => {
-        console.log(room, index, "här är room och index");
+      
         selectRoom(index);
       });
       sidebarList.appendChild(buttonInSidebar);
@@ -69,27 +68,26 @@ function handleRoomList(data) {
       buttonInSidebar2.className = "listelementsInSidebar";
       buttonInSidebar2.addEventListener("click", () => {
         const passwordEntered = prompt("lösen");
-        if (passwordEntered === room.password) {
-          selectRoom(index);
-        } else {
-          alert("FEEEEL");
-        }
+        let roomName = roomList[index].name;
+        socket.emit("password check", {
+          name: roomName,
+          password: passwordEntered,
+        });
+        socket.on("did pass", (data) => {
+          if (data) {
+            selectRoom(index);
+          } else {
+            alert("You suck!");
+          }
+        });
       });
       sidebarList2.appendChild(buttonInSidebar2);
     }
   });
-
-  // let buttons = document.querySelectorAll(".listelementsInSidebar");
-  // buttons.forEach((button, index) => {
-  //   button.addEventListener("click", () => {
-  //     selectRoom(index);
-  //   });
-  // });
 }
 
 function selectRoom(roomIndex) {
   let roomName = roomList[roomIndex];
-  console.log(JSON.stringify(roomName) + " : roomanme?!");
   onJoinRoom(roomName);
 }
 
@@ -100,7 +98,6 @@ export function onJoinRoom(roomName) {
   document.querySelector(".sidebar").classList.add("hidden");
 
   socket.emit("join room", { name: username, room: roomName.name });
-  socket.on("message", onMessageReceived);
 
   // Leave room button
   const leaveRoom = document.querySelector(".leaveRoomButton");
@@ -111,9 +108,7 @@ export function onJoinRoom(roomName) {
 
 // Leaving the chat room
 function onLeaveRoom(roomName) {
-  console.log(roomName.name, ": detta är roomname");
   socket.emit("leave room", { name: username, room: roomName.name }); // Här behlöver vi skicka med data på rummet
-  console.log("nu lämnar vi");
 
   document.querySelector(".join.ui").classList.add("hidden");
   document.querySelector(".chat.ui").classList.add("hidden");
