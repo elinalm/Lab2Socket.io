@@ -8,6 +8,11 @@ const io = socketIO(server);
 
 const port = 3000;
 
+if (global.gc) {
+  global.gc();
+  console.log("garbage collector!");
+}
+
 let roomList = [
   { name: "Open chat", password: "", hasPass: false, users: 0 },
   { name: "Closed chat", password: "Pass", hasPass: true, users: 0 },
@@ -23,6 +28,10 @@ function getNameAndHasPass() {
 
 function handleRoomUsers(roomName, action) {
   const theRoom = roomList.filter((room) => room.name === roomName);
+  if (theRoom[0] === undefined) {
+    console.log("undefinde stuff");
+    return;
+  }
   if (action === "add") {
     theRoom[0].users++;
   } else if (action === "remove") {
@@ -46,15 +55,11 @@ function removeRoom() {
   updateClientsRoomList();
 }
 
-function sendListToClient(socket) {
-  socket.emit("room list", getNameAndHasPass());
-}
-
 app.use(express.static(__dirname + "/public"));
 
 io.on("connection", (socket) => {
   socket.on("joined lobby", (data) => {
-    sendListToClient(socket);
+    updateClientsRoomList();
   });
 
   socket.on("add room", (data) => {
@@ -93,13 +98,14 @@ io.on("connection", (socket) => {
   });
 
   socket.on("leave room", (data) => {
+    // socket.removeAllListeners("leave room");
     handleRoomUsers(data.room, "remove");
     socket.leave(data.room, () => {
       io.to(data.room).emit("message", {
         name: data.name,
         message: " has left the room!",
       });
-      sendListToClient(socket);
+      updateClientsRoomList();
     });
   });
 
