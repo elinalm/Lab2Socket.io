@@ -28,9 +28,4 @@ function loadChatUi(data) {
   document.querySelector(".lobby").classList.add("hidden");
   document.querySelector(".enterPassword").classList.add("hidden")
 
-  let chatName = document.querySelector(".chatName")
-  const para = document.createElement("p")
-  para.innerText = data
-  chatName.append(para)
-  // document.querySelector(".sidebar").classList.remove("hidden");
 }
