@@ -1,6 +1,7 @@
 import { enterLobby, onJoinRoom } from "./lobby.js";
 import { onMessageReceived } from "./chat.js";
 
+
 // import { onLeaveRoom } from "./lobby.js";
 
 export const socket = io();
@@ -25,5 +26,11 @@ function loadChatUi(data) {
   document.querySelector(".join.ui").classList.add("hidden");
   document.querySelector(".chat.ui").classList.remove("hidden");
   document.querySelector(".lobby").classList.add("hidden");
+  document.querySelector(".enterPassword").classList.add("hidden")
+
+  let chatName = document.querySelector(".chatName")
+  const para = document.createElement("p")
+  para.innerText = data
+  chatName.append(para)
   // document.querySelector(".sidebar").classList.remove("hidden");
 }

@@ -3,6 +3,7 @@ import { socket } from "./logic.js";
 let username;
 let roomList;
 
+
 // Display new list in room view
 export function enterLobby(event) {
   event.preventDefault();
@@ -25,24 +26,30 @@ export function enterLobby(event) {
     addRoom();
   });
 }
+
+
 const submitRoom = document.querySelector(".addRoom");
 submitRoom.addEventListener("submit", (event) => {
+  
   event.preventDefault();
-
-  const roomName = document.getElementById("roomName").value;
-  const password = document.getElementById("password").value;
+ 
+  const roomName = document.querySelector(".roomName").value;
+  const password = document.querySelector(".password").value;
 
   const roomObj = {
     name: roomName,
     password: password,
   };
+
   socket.emit("add room", roomObj);
+
 });
 
 // user can create room
 function addRoom() {
   document.querySelector(".addRoom").classList.remove("hidden");
   document.querySelector(".lobby").classList.add("hidden");
+ 
 }
 
 function handleRoomList(data) {
@@ -66,19 +73,35 @@ function handleRoomList(data) {
       buttonInSidebar2.innerText = room.name;
       buttonInSidebar2.className = "listelementsInSidebar";
       buttonInSidebar2.addEventListener("click", () => {
-        const passwordEntered = prompt("lösen");
-        let roomName = roomList[index].name;
-        socket.emit("password check", {
-          name: roomName,
-          password: passwordEntered,
-        });
+
+        document.querySelector(".lobby").classList.add("hidden");
+        document.querySelector(".addRoom").classList.add("hidden");
+        document.querySelector(".enterPassword").classList.remove("hidden");
+        let passwordButton = document.querySelector(".enterPassword button")
+        passwordButton.addEventListener("click", () => {
+
+          event.preventDefault()
+          let passwordEntered = document.querySelector(".enterPassword input").value
+          console.log(passwordEntered + "detta är password");
+
+          // const passwordEntered = prompt("lösen");
+          let roomName = roomList[index].name;
+          socket.emit("password check", {
+            name: roomName,
+            password: passwordEntered,
+          });
+        })
         socket.on("did pass", (data) => {
           if (data) {
             selectRoom(index);
           } else {
-            alert("You suck!");
+            let password = document.querySelector(".enterPassword")
+            let wrongPassword = document.querySelector(".enterPassword p")
+            wrongPassword.innerText = "Wrong Password, try again!"
+            password.append(wrongPassword)
           }
         });
+       
       });
       sidebarList2.appendChild(buttonInSidebar2);
     }

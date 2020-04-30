@@ -4,6 +4,7 @@ import { socket } from "./logic.js";
 const messageForm = document.querySelector(".chat.ui form");
 messageForm.addEventListener("submit", onSendMessage);
 
+
 export function onMessageReceived({ name, message }) {
   console.log("i messageONRecieve");
   const ul = document.querySelector(".chatMessageUl");
