@@ -60,43 +60,19 @@ function handleRoomList(data) {
 
   roomList.forEach((room, index) => {
     if (!room.hasPass) {
-      let buttonInSidebar = document.createElement("button");
-      buttonInSidebar.innerText = room.name;
-      buttonInSidebar.className = "listelementsInSidebar";
-      buttonInSidebar.addEventListener("click", () => {
-        selectRoom(index);
-      });
+      let buttonInSidebar = getChatroomWithoutPassword(room, index);
       sidebarList.appendChild(buttonInSidebar);
     } else {
-      let buttonInSidebar2 = document.createElement("button");
-      buttonInSidebar2.innerText = room.name;
-      buttonInSidebar2.className = "listelementsInSidebar";
-      buttonInSidebar2.addEventListener("click", () => {
-        document.querySelector(".lobby").classList.add("hidden");
-        document.querySelector(".addRoom").classList.add("hidden");
-        document.querySelector(".enterPassword").classList.remove("hidden");
-        let passwordButton = document.querySelector(".enterPassword button");
-        passwordButton.addEventListener("click", () => {
-          event.preventDefault();
-          let passwordEntered = document.querySelector(".enterPassword input")
-            .value;
-          document.querySelector(".enterPassword input").value = "";
-          let roomName = roomList[index].name;
-          socket.emit("password check", {
-            name: roomName,
-            password: passwordEntered,
-          });
-        });
-        socket.on("did pass", (data) => {
-          if (data) {
-            selectRoom(index);
-          } else {
-            let password = document.querySelector(".enterPassword");
-            let wrongPassword = document.querySelector(".enterPassword p");
-            wrongPassword.innerText = "Wrong Password, try again!";
-            password.append(wrongPassword);
-          }
-        });
+      let buttonInSidebar2 = getChatroomWithPassword(room, index);
+      socket.on("did pass", (data) => {
+        if (data) {
+          selectRoom(index);
+        } else {
+          let password = document.querySelector(".enterPassword");
+          let wrongPassword = document.querySelector(".enterPassword p");
+          wrongPassword.innerText = "Wrong Password, try again!";
+          password.append(wrongPassword);
+        }
       });
       sidebarList2.appendChild(buttonInSidebar2);
     }
@@ -134,4 +110,40 @@ function onLeaveRoom(roomName) {
   document.querySelector(".sidebar").classList.remove("hidden");
 
   document.querySelector(".chatMessageUl").innerHTML = "";
+}
+
+// Extracted functionality for adding a chatroom without a password.
+function getChatroomWithoutPassword(room, index) {
+  let buttonInSidebar = document.createElement("button");
+  buttonInSidebar.innerText = room.name;
+  buttonInSidebar.className = "listelementsInSidebar";
+  buttonInSidebar.addEventListener("click", () => {
+    selectRoom(index);
+  });
+  return buttonInSidebar;
+}
+
+// Extracted functionality for adding a chatroom with a password.
+function getChatroomWithPassword(room, index) {
+  let buttonInSidebar2 = document.createElement("button");
+  buttonInSidebar2.innerText = room.name;
+  buttonInSidebar2.className = "listelementsInSidebar";
+  buttonInSidebar2.addEventListener("click", () => {
+    document.querySelector(".lobby").classList.add("hidden");
+    document.querySelector(".addRoom").classList.add("hidden");
+    document.querySelector(".enterPassword").classList.remove("hidden");
+    let passwordButton = document.querySelector(".enterPassword button");
+    passwordButton.addEventListener("click", () => {
+      event.preventDefault();
+      let passwordEntered = document.querySelector(".enterPassword input")
+        .value;
+      document.querySelector(".enterPassword input").value = "";
+      let roomName = roomList[index].name;
+      socket.emit("password check", {
+        name: roomName,
+        password: passwordEntered,
+      });
+    });
+  });
+  return buttonInSidebar2;
 }
