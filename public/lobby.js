@@ -51,14 +51,13 @@ function handleRoomList(data) {
   let sidebarList2 = document.querySelector(".closedRoomlist");
   sidebarList.innerHTML = "";
   sidebarList2.innerHTML = "";
- 
+
   roomList.forEach((room, index) => {
     if (!room.hasPass) {
       let buttonInSidebar = document.createElement("button");
       buttonInSidebar.innerText = room.name;
       buttonInSidebar.className = "listelementsInSidebar";
       buttonInSidebar.addEventListener("click", () => {
-      
         selectRoom(index);
       });
       sidebarList.appendChild(buttonInSidebar);

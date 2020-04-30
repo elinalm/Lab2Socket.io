@@ -28,11 +28,22 @@ function handleRoomUsers(roomName, action) {
   } else if (action === "remove") {
     theRoom[0].users--;
   }
+  removeRoom();
+}
 
-  // Removes room from list if empty
-  if (theRoom[0].users === 0) {
-    roomList = roomList.filter((x) => x.name != theRoom[0].name);
-  }
+function updateClientsRoomList() {
+  io.emit("room list", getNameAndHasPass());
+}
+
+function removeRoom() {
+  console.log("Inne i remove");
+  roomList.map((room) => {
+    if (room.users === 0) {
+      roomList = roomList.filter((x) => x.name != room.name);
+    }
+  });
+  console.log(roomList);
+  updateClientsRoomList();
 }
 
 function sendListToClient(socket) {
@@ -56,7 +67,7 @@ io.on("connection", (socket) => {
       data.hasPass = false;
     }
     roomList.push(data);
-    io.emit("room list", getNameAndHasPass());
+    updateClientsRoomList();
     socket.emit("add successful", data.name);
   });
 
@@ -92,11 +103,12 @@ io.on("connection", (socket) => {
     });
   });
 
-  socket.on("disconnect", () => {
+  socket.on("disconnect", (data) => {
     socket.broadcast.emit("message", {
       name: "User",
       message: ` disconnected`,
     });
+    removeRoom();
   });
 
   socket.on("password check", (data) => {
