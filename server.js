@@ -76,7 +76,7 @@ io.on("connection", (socket) => {
 
     socket.join(data.room, () => {
       // Respond to client that join was success
-      socket.emit("join successful", data.room);
+      socket.emit("join successful", "success");
       handleRoomUsers(data.room, "add");
 
       //Broadcast message to all clients in the room

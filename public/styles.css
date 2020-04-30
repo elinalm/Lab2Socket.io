@@ -115,10 +115,14 @@ li:nth-child(odd) {
 header {
   color: #4f6457;
   font-family: "Changa", sans-serif;
-  font-size: 4rem;
   margin: 0 1rem;
   display: flex;
   justify-content: space-between;
+}
+
+header h1 {
+  font-size: 3rem;
+  margin: 0;
 }
 
 .contact {

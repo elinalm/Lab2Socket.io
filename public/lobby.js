@@ -35,6 +35,8 @@ submitRoom.addEventListener("submit", (event) => {
  
   const roomName = document.querySelector(".roomName").value;
   const password = document.querySelector(".password").value;
+  document.querySelector(".roomName").value = ""
+  document.querySelector(".password").value = ""
 
   const roomObj = {
     name: roomName,
@@ -82,7 +84,7 @@ function handleRoomList(data) {
 
           event.preventDefault()
           let passwordEntered = document.querySelector(".enterPassword input").value
-          console.log(passwordEntered + "detta är password");
+          document.querySelector(".enterPassword input").value = ""
 
           // const passwordEntered = prompt("lösen");
           let roomName = roomList[index].name;
