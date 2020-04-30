@@ -21,17 +21,26 @@
         </header>
 
       <main>
+
+        <form class="enterPassword hidden">
+         <input type="text" placeholder="Enter password" required="true">
+         <button>Enter</button>
+         <p style="color: red"></p>
+        </form>
+        
         
       <div class="sidebar hidden">
+        
         <form>
-          <button>Add room</button>
+          <button>Add room +</button>
         </form>
 
          <h3>Open Rooms</h3> 
-        <ul class="roomlist">
+          <ul class="roomlist">
         </ul>
+
         <h3>Closed Rooms</h3> 
-        <ul class="closedRoomlist">
+          <ul class="closedRoomlist">
         </ul>
       </div>
 
@@ -42,13 +51,13 @@
       </form>
 
       <div class="lobby hidden">
-          <h1>Welcome</h1>
+          <h1>Welcome!</h1>
         
       </div>
 
       <form class="addRoom hidden">
-        <input  id="roomName" type="text" placeholder="Enter room name" />
-        <input id="password" type="text" placeholder="Enter password(optional)" />
+        <input  class="roomName" type="text" placeholder="Enter room name" />
+        <input class="password" type="text" placeholder="Enter password(optional)" />
         <button>Add</button>
       </form>
     </div>
@@ -59,6 +68,8 @@
     </div> -->
 
       <div class="chat ui hidden">
+        <div class="chatName">
+        </div>
         <ul class="chatMessageUl">
           <!-- Messages are put here-->
         </ul>
