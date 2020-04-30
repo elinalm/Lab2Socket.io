@@ -5,37 +5,55 @@ const socketIO = require("socket.io");
 const app = express();
 const server = http.createServer(app);
 const io = socketIO(server);
-const roomList = [
-  { name: "Open chat", password: "", hasPass: false },
-  { name: "Room nomero ono", password: "", hasPass: false },
-  { name: "Closed chat", password: "Pass", hasPass: true },
-  { name: "Closed ", password: "ss", hasPass: true },
+
+const port = 3000;
+
+let roomList = [
+  { name: "Open chat", password: "", hasPass: false, users: 0 },
+  { name: "Closed chat", password: "Pass", hasPass: true, users: 0 },
 ];
 
 function getNameAndHasPass() {
   let reducedList = roomList.map((room) => ({
-    name: room.name, 
-    hasPass: room.hasPass
-  }))
-  return reducedList
+    name: room.name,
+    hasPass: room.hasPass,
+  }));
+  return reducedList;
+}
+
+function handleRoomUsers(roomName, action) {
+  const theRoom = roomList.filter((room) => room.name === roomName);
+  if (action === "add") {
+    theRoom[0].users++;
+  } else if (action === "remove") {
+    theRoom[0].users--;
+  }
+
+  // Removes room from list if empty
+  if (theRoom[0].users === 0) {
+    roomList = roomList.filter((x) => x.name != theRoom[0].name);
+  }
+}
+
+function sendListToClient(socket) {
+  socket.emit("room list", getNameAndHasPass());
 }
 
 app.use(express.static(__dirname + "/public"));
 
 io.on("connection", (socket) => {
-  console.log("Client connected: ", socket.id);
-
   socket.on("joined lobby", (data) => {
-    socket.emit("room list", getNameAndHasPass());
+    sendListToClient(socket);
   });
 
   socket.on("add room", (data) => {
     if (roomList.find((room) => room.name === data.name)) return;
-
-    if(data.password) {
-      data.hasPass = true
+    console.log(JSON.stringify(data));
+    data.users = 0;
+    if (data.password) {
+      data.hasPass = true;
     } else {
-      data.hasPass = false
+      data.hasPass = false;
     }
     roomList.push(data);
     io.emit("room list", getNameAndHasPass());
@@ -43,12 +61,12 @@ io.on("connection", (socket) => {
   });
 
   socket.on("join room", (data) => {
-    socket.removeAllListeners("message")
+    socket.removeAllListeners("message");
 
     socket.join(data.room, () => {
-     
       // Respond to client that join was success
       socket.emit("join successful", "success");
+      handleRoomUsers(data.room, "add");
 
       //Broadcast message to all clients in the room
       io.to(data.room).emit("message", {
@@ -63,13 +81,14 @@ io.on("connection", (socket) => {
     });
   });
 
-  
   socket.on("leave room", (data) => {
+    handleRoomUsers(data.room, "remove");
     socket.leave(data.room, () => {
       io.to(data.room).emit("message", {
         name: data.name,
         message: " has left the room!",
       });
+      sendListToClient(socket);
     });
   });
 
@@ -88,7 +107,6 @@ io.on("connection", (socket) => {
       socket.emit("did pass", false);
     }
   });
-
 });
 
-server.listen(3000, () => console.log("Server is running"));
+server.listen(port, () => console.log("Server is running on port", port));

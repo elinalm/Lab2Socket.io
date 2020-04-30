@@ -1,7 +1,6 @@
 import { enterLobby, onJoinRoom } from "./lobby.js";
 import { onMessageReceived } from "./chat.js";
 
-
 // import { onLeaveRoom } from "./lobby.js";
 
 export const socket = io();
@@ -17,8 +16,8 @@ function setupEventListeners() {
 
   //socket io events
   socket.on("join successful", loadChatUi);
-  socket.on("add successful", onJoinRoom);
-  socket.on("message", onMessageReceived)
+  // socket.on("add successful", onJoinRoom);
+  socket.on("message", onMessageReceived);
 }
 
 function loadChatUi(data) {
