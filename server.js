@@ -1,16 +1,16 @@
 const express = require("express");
 const http = require("http");
 const socketIO = require("socket.io");
-
 const app = express();
 const server = http.createServer(app);
 const io = socketIO(server);
 
 const port = 3000;
+app.use(express.static(__dirname + "/public"));
 
+//Removes any unused data from memory
 if (global.gc) {
   global.gc();
-  console.log("garbage collector!");
 }
 
 let roomList = [
@@ -18,6 +18,7 @@ let roomList = [
   { name: "Closed chat", password: "Pass", hasPass: true, users: 0 },
 ];
 
+// Reduced list to send to client
 function getNameAndHasPass() {
   let reducedList = roomList.map((room) => ({
     name: room.name,
@@ -26,10 +27,11 @@ function getNameAndHasPass() {
   return reducedList;
 }
 
+// Adjusts how many users in one room
 function handleRoomUsers(roomName, action) {
   const theRoom = roomList.filter((room) => room.name === roomName);
   if (theRoom[0] === undefined) {
-    console.log("undefinde stuff");
+    console.log("undefind stuff");
     return;
   }
   if (action === "add") {
@@ -44,18 +46,15 @@ function updateClientsRoomList() {
   io.emit("room list", getNameAndHasPass());
 }
 
+// If no users in room, room is removed
 function removeRoom() {
-  console.log("Inne i remove");
   roomList.map((room) => {
     if (room.users === 0) {
       roomList = roomList.filter((x) => x.name != room.name);
     }
   });
-  console.log(roomList);
   updateClientsRoomList();
 }
-
-app.use(express.static(__dirname + "/public"));
 
 io.on("connection", (socket) => {
   socket.on("joined lobby", (data) => {
@@ -64,8 +63,8 @@ io.on("connection", (socket) => {
 
   socket.on("add room", (data) => {
     if (roomList.find((room) => room.name === data.name)) return;
-    console.log(JSON.stringify(data));
     data.users = 0;
+    // Check if room has password
     if (data.password) {
       data.hasPass = true;
     } else {
@@ -98,7 +97,6 @@ io.on("connection", (socket) => {
   });
 
   socket.on("leave room", (data) => {
-    // socket.removeAllListeners("leave room");
     handleRoomUsers(data.room, "remove");
     socket.leave(data.room, () => {
       io.to(data.room).emit("message", {
@@ -117,6 +115,7 @@ io.on("connection", (socket) => {
     removeRoom();
   });
 
+  //Check if password is correct
   socket.on("password check", (data) => {
     const roomToCheck = roomList.filter((room) => room.name === data.name);
     if (roomToCheck[0].password === data.password) {

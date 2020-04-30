@@ -16,14 +16,10 @@ Vi har valt att bygga projektet med vanilla JavaScript, utan något stöd från 
 
 Kör först npm install i din terminal:
 
-```bash
-npm install
-```
+`npm install`
 
 Starta sedan servern:
 
-```bash
-node server.js
-```
+`node server.js`
 
 Du får då ett meddelande i terminalen att "Server is running". Gå till din webbläsare och skriv in localhost:3000. Sidan öppnas då i din webbläsare.
